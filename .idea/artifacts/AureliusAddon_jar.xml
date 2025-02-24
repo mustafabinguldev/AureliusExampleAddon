@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AureliusAddon:jar">
+    <output-path>$PROJECT_DIR$/../../aurelius-app/addons</output-path>
+    <root id="archive" name="AureliusAddon.jar">
+      <element id="module-output" name="AureliusAddon" />
+    </root>
+  </artifact>
+</component>
