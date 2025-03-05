@@ -1,10 +1,17 @@
 package tech.bingulhan;
 
 import tech.bingulhan.controller.UserDtoController;
-import tech.bingulhan.webserver.app.RestFulResponseStructure;
 import tech.bingulhan.webserver.app.addon.Addon;
 import tech.bingulhan.webserver.app.addon.AddonManager;
+import tech.bingulhan.webserver.app.restful.RestFulResponseHelper;
+import tech.bingulhan.webserver.app.restful.RestFulResponseStructure;
+import tech.bingulhan.webserver.app.restful.cookie.CookieStructure;
+import tech.bingulhan.webserver.app.restful.cookie.impl.CFHttpOnly;
+import tech.bingulhan.webserver.app.restful.cookie.impl.CFMaxAge;
 import tech.bingulhan.webserver.response.impl.restful.RestFulRequestType;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class Main extends Addon {
     @Override
@@ -22,20 +29,33 @@ public class Main extends Addon {
                 setRequestType(RestFulRequestType.POST).build());
 
         //domoin:8080/api/hello GET
+
         AddonManager.
                 registerRestFulService(new RestFulResponseStructure.Builder("hello").
                         setRestFulResponse(new RestFulResponseStructure.RestFulResponse<String, Object>() {
                             @Override
                             public String response(Object o) {
-                                return "Hello world!";
+                                return "Hello world !";
                             }
 
                             @Override
                             public Object convert(String s) throws Exception {
                                 return null;
                             }
+
+                            @Override
+                            public void initializeSettings(RestFulResponseHelper restFulResponseHelper) {
+
+                                CookieStructure cookieStructure = new CookieStructure();
+                                cookieStructure.setCookieName("randomid");
+                                cookieStructure.setCookieValue(""+new Random().nextInt(10000));
+                                cookieStructure.setFeatures(Arrays.asList(new CFMaxAge(3600), new CFHttpOnly()));
+                                restFulResponseHelper.sendCookie(cookieStructure);
+
+                            }
                         }).
-                        setRequestType(RestFulRequestType.GET).build());
+                        setRequestType(RestFulRequestType.GET).
+                        build());
 
     }
 
