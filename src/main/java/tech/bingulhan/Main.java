@@ -34,8 +34,14 @@ public class Main extends Addon {
                 registerRestFulService(new RestFulResponseStructure.Builder("hello").
                         setRestFulResponse(new RestFulResponseStructure.RestFulResponse<String, Object>() {
                             @Override
-                            public String response(Object o) {
-                                return "Hello world !";
+                            public String response(Object o, RestFulResponseHelper helper) {
+                                CookieStructure cookieStructure = new CookieStructure();
+                                cookieStructure.setCookieName("randomid");
+                                cookieStructure.setCookieValue(""+new Random().nextInt(10000));
+                                cookieStructure.setFeatures(Arrays.asList(new CFMaxAge(3600), new CFHttpOnly()));
+                                helper.sendCookie(cookieStructure);
+
+                                return "Hello world ! Path data:"+ Arrays.toString(helper.getPathData());
                             }
 
                             @Override
@@ -43,16 +49,32 @@ public class Main extends Addon {
                                 return null;
                             }
 
-                            @Override
-                            public void initializeSettings(RestFulResponseHelper restFulResponseHelper) {
+                        }).
+                        setRequestType(RestFulRequestType.GET).
+                        build());
 
+        //domoin:8080/api/hello/etc/hello2 GET
+
+
+        AddonManager.
+                registerRestFulService(new RestFulResponseStructure.Builder("hello/hello2").
+                        setRestFulResponse(new RestFulResponseStructure.RestFulResponse<String, Object>() {
+                            @Override
+                            public String response(Object o, RestFulResponseHelper helper) {
                                 CookieStructure cookieStructure = new CookieStructure();
-                                cookieStructure.setCookieName("randomid");
+                                cookieStructure.setCookieName("randomid3");
                                 cookieStructure.setCookieValue(""+new Random().nextInt(10000));
                                 cookieStructure.setFeatures(Arrays.asList(new CFMaxAge(3600), new CFHttpOnly()));
-                                restFulResponseHelper.sendCookie(cookieStructure);
+                                helper.sendCookie(cookieStructure);
 
+                                return "Hello world 2 ! Path data:"+ Arrays.toString(helper.getPathData());
                             }
+
+                            @Override
+                            public Object convert(String s) throws Exception {
+                                return null;
+                            }
+
                         }).
                         setRequestType(RestFulRequestType.GET).
                         build());

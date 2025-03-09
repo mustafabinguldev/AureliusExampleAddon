@@ -15,7 +15,13 @@ import java.util.Random;
 public class UserDtoController implements RestFulResponseStructure.RestFulResponse<UserDto, UserRequest> {
 
     @Override
-    public UserDto response(UserRequest request) {
+    public UserDto response(UserRequest request, RestFulResponseHelper helper) {
+
+        CookieStructure cookieStructure = new CookieStructure();
+        cookieStructure.setCookieName("randomid2");
+        cookieStructure.setCookieValue(""+new Random().nextInt(10000));
+        cookieStructure.setFeatures(Arrays.asList(new CFMaxAge(3600), new CFHttpOnly()));
+        helper.sendCookie(cookieStructure);
 
         UserDto userDto = new UserDto();
         userDto.setUsername(request.getUsername());
@@ -29,13 +35,6 @@ public class UserDtoController implements RestFulResponseStructure.RestFulRespon
         return (UserRequest) AddonManager.convertFromBodyJson(s, UserRequest.class);
     }
 
-    @Override
-    public void initializeSettings(RestFulResponseHelper restFulResponseHelper) {
-        CookieStructure cookieStructure = new CookieStructure();
-        cookieStructure.setCookieName("randomid2");
-        cookieStructure.setCookieValue(""+new Random().nextInt(10000));
-        cookieStructure.setFeatures(Arrays.asList(new CFMaxAge(3600), new CFHttpOnly()));
-        restFulResponseHelper.sendCookie(cookieStructure);
-    }
+
 
 }
